@@ -1,15 +1,16 @@
-FROM python:3.9.17-bookworm
+FROM python:3.9-slim
 
 ENV PYTHONUNBUFFERED   True
 
-ENV APP_HOME /back-end
 
-WORKDIR $APP_HOME
+WORKDIR /app
 
 COPY . ./
 
 RUN pip install --no-cache-dir --upgrade pip 
 RUN pip install --no-cache-dir -r requirements.txt
 
+EXPOSE $PORT
 
-CMD exec gunicorn --bird :$PORT --workers 1  --thread 8 --timeout 0 app:app
+
+CMD exec gunicorn -b :$PORT -w 4 app:app
